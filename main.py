@@ -1,23 +1,23 @@
 import streamlit as st
-from pytube import YouTube
+import pytube
 
+st.set_page_config(page_title="Video Downloader",
+                   page_icon=":film_projector:", layout="wide")
 
-def Downloader(link):
-    youtubeObject = YouTube(link)
-    youtubeObject = youtubeObject.streams.get_highest_resolution()
+st.title("Video Downloader")
 
-    try:
-        asset = youtubeObject.download()
-    except:
-        print('error')
-    print('succesfull')
-    with open(asset, 'rb') as file:
-        btn = st.download_button(label='Download',
-                                 data=file,
-                                 file_name='video.mp4',
-                                 mime='video/mp4')
+video_url = st.text_input("Enter the video URL")
 
-
-link = st.text_input('Place the URL here')
-if len(link) > 0:
-    Downloader(link)
+if video_url:
+    yt = pytube.YouTube(video_url)
+    available_qualities = yt.streams.filter(
+        progressive=True, file_extension='mp4').order_by('resolution').desc().all()
+    video_quality = st.selectbox("Select video quality", [
+                                 i.resolution for i in available_qualities])
+    selected_video = next(
+        x for x in available_qualities if x.resolution == video_quality)
+    st.write("Downloading...")
+    selected_video.download()
+    st.success("Video downloaded!")
+else:
+    st.write("Please enter a video URL")
