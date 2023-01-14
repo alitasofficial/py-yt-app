@@ -3,15 +3,14 @@ import pytube
 import os
 
 st.set_page_config(page_title="Video Downloader",
-                   page_icon=":film_projector:",
-                   layout="wide")
+                   page_icon="🌏",
+                   layout="centered")
 
 st.title("Video Downloader")
 
 form = st.form(key='my-form', clear_on_submit=True)
 url = form.text_input("Enter the video URL")
-submit = form.form_submit_button('Submit')
-
+submit = form.form_submit_button('Get the video')
 
 if submit:
     yt = pytube.YouTube(url)
